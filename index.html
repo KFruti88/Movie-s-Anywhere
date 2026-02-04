@@ -40,13 +40,14 @@
         }
 
         .description-text {
-            width: 80%;
-            max-width: 1200px;
+            width: 90%;
+            max-width: 1000px;
             text-align: center;
             color: #888;
             font-size: 1rem;
-            line-height: 1.5;
-            margin: 10px 0 20px 0;
+            line-height: 1.6;
+            margin: 10px auto 30px auto;
+            display: block;
         }
 
         .movie-card {
@@ -96,7 +97,7 @@
         /* 📱 MOBILE STACKING FIX */
         @media (max-width: 768px) {
             #movie-container { width: 95% !important; grid-template-columns: 1fr; gap: 30px; }
-            .description-text { width: 90%; font-size: 0.9rem; }
+            .description-text { font-size: 0.9rem; margin-bottom: 20px; }
             h1 { font-size: 2.2rem !important; }
         }
     </style>
@@ -112,7 +113,7 @@
         If some of these don't have the Movie's Anywhere link then you'll have to buy it on Amazon or you can click on the google link or youtube to watch it
     </div>
 
-    <div id="movie-container">Direct-Linking Images...</div>
+    <div id="movie-container">Syncing Cinema Library...</div>
 
     <script>
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnwK6U18P1u1eAS8a_PqZzpOKxQ9AATL6RBH7CfxXQR10YPM63akRqxSDbNiXYJWs92tvobh6iqE7/pub?output=csv';
@@ -122,9 +123,11 @@
             Papa.parse(csvUrl, {
                 download: true, header: true,
                 complete: function(results) { 
-                    // 🚨 NEW REVERSE LOGIC: 
-                    // Filters out empty rows and then reverses the array so bottom of CSV = top of site
-                    const sortedData = results.data.filter(row => row['Movie Name'] && row['Movie Name'].trim() !== "").reverse();
+                    // Permanent A-Z Sort Logic
+                    let sortedData = results.data.filter(row => row['Movie Name'] && row['Movie Name'].trim() !== "");
+                    
+                    sortedData.sort((a, b) => a['Movie Name'].trim().localeCompare(b['Movie Name'].trim()));
+
                     renderMovies(sortedData); 
                 }
             });

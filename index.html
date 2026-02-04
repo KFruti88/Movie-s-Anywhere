@@ -41,11 +41,23 @@
 
         .description-text {
             width: 90%; max-width: 1000px; text-align: center; color: #888;
-            font-size: 1rem; line-height: 1.6; margin: 10px auto 20px auto;
+            font-size: 1rem; line-height: 1.6; margin: 10px auto 10px auto;
+        }
+
+        /* 🔢 MOVIE COUNTER STYLE */
+        #movie-count-badge {
+            background: #1a1a1a;
+            color: var(--ma-blue);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border: 1px solid #333;
+            margin-bottom: 10px;
         }
 
         .search-wrapper {
-            width: 90%; max-width: 600px; margin: 20px 0;
+            width: 90%; max-width: 600px; margin: 10px 0 20px 0;
             display: flex; flex-direction: column; align-items: center;
         }
 
@@ -76,6 +88,7 @@
         .btn-youtube { background: #ff0000; }
         .btn-ma { background: var(--ma-blue); }
 
+        /* 📱 MOBILE 2-COLUMN GRID FIX */
         @media (max-width: 768px) {
             #movie-container { width: 95% !important; grid-template-columns: repeat(2, 1fr); gap: 12px; }
             h1 { font-size: 2.2rem !important; }
@@ -91,6 +104,8 @@
         <span style="color: var(--ma-blue);">A</span><span style="color: var(--amazon-orange);">n</span><span style="color: var(--yt-red);">y</span><span style="color: var(--goog-blue);">w</span><span style="color: var(--goog-green);">h</span><span style="color: var(--ma-blue);">e</span><span style="color: var(--amazon-orange);">r</span><span style="color: var(--yt-red);">e</span>
     </h1>
 
+    <div id="movie-count-badge">Loading Collection...</div>
+
     <div class="description-text">
         If some of these don't have the Movie's Anywhere link then you'll have to buy it on Amazon or you can click on the google link or youtube to watch it
     </div>
@@ -103,7 +118,6 @@
     <div id="movie-container">Direct-Linking Cinema Library...</div>
 
     <script>
-        // Renamed variable to prevent "Already Declared" syntax errors
         let movieLibraryMaster = []; 
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnwK6U18P1u1eAS8a_PqZzpOKxQ9AATL6RBH7CfxXQR10YPM63akRqxSDbNiXYJWs92tvobh6iqE7/pub?output=csv' + '&v=' + Date.now();
         const githubBase = 'https://raw.githubusercontent.com/KFruti88/Movies-Anywhere/main/images/';
@@ -127,11 +141,14 @@
             renderMovies(filtered);
         }
 
+        function updateCounter(count) {
+            const badge = document.getElementById('movie-count-badge');
+            badge.innerText = `Total Movies: ${count}`;
+        }
+
         function fixImageUrl(url) {
             if (!url) return '';
             let clean = url.trim();
-            
-            // Fixes standard GitHub browser links to Raw content links
             if (clean.includes('github.com')) {
                 clean = clean.replace('github.com', 'raw.githubusercontent.com')
                              .replace('/blob/', '/')
@@ -140,14 +157,16 @@
             else if (!clean.startsWith('http')) {
                 clean = githubBase + clean;
             }
-            
-            // Handshake reset for cross-browser caching (Opera/Chrome/Safari)
             return clean + (clean.includes('?') ? '&' : '?') + 'v=' + Date.now();
         }
 
         function renderMovies(data) {
             const container = document.getElementById('movie-container');
             container.innerHTML = '';
+            
+            // Update the counter based on the current data view
+            updateCounter(data.length);
+
             data.forEach(row => {
                 const name = row['Movie Name'];
                 const card = document.createElement('div');
@@ -175,7 +194,6 @@
             return `<a href="${url}" target="_blank" class="btn ${className}">${label}</a>`;
         }
 
-        // Safe delay for extension background reporting (fixes "Port Closed" errors)
         window.onload = function() { setTimeout(universalInit, 500); };
     </script>
 </body>

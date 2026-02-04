@@ -29,7 +29,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 🔢 FIXED TOP COUNTER BAR */
+        /* 🔢 TOP FIXED COUNTER BAR */
         #top-counter-bar {
             position: fixed;
             top: 0;
@@ -50,14 +50,14 @@
             text-transform: uppercase;
         }
 
-        /* 🛠️ UNIVERSAL WIDE GRID: 90% Box Size for Ultra-Wide */
+        /* 🛠️ UNIVERSAL WIDE GRID: 90% Box Size */
         #movie-container {
             width: 90% !important; 
             max-width: 2800px; 
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
             gap: 20px;
-            margin-top: 100px; /* Space for the fixed counter */
+            margin-top: 100px; 
             margin-bottom: 60px;
         }
 
@@ -98,11 +98,9 @@
         .btn-youtube { background: #ff0000; }
         .btn-ma { background: var(--ma-blue); }
 
-        /* 📱 MOBILE 2-COLUMN GRID FIX */
         @media (max-width: 768px) {
             #movie-container { width: 95% !important; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 80px; }
             h1 { font-size: 2.2rem !important; margin-top: 100px !important; }
-            #movie-count-badge { font-size: 0.9rem; }
             .title { font-size: 0.75rem; min-height: 2rem; }
             .btn { font-size: 0.55rem; padding: 5px 1px; }
         }
@@ -120,7 +118,7 @@
     </h1>
 
     <div class="description-text">
-        If some of these don't have the Movie's Anywhere link then you'll have to buy it on Amazon or you can click on the google link or youtube to watch it
+        Browse your collection below. If you see a button, the link is live in your spreadsheet
     </div>
 
     <div class="search-wrapper">
@@ -128,7 +126,7 @@
         <input type="text" id="movie-search" placeholder="Filter by title..." onkeyup="filterCollection()">
     </div>
 
-    <div id="movie-container">Direct-Linking Cinema Library...</div>
+    <div id="movie-container">Syncing Cinema Library...</div>
 
     <script>
         let movieLibraryMaster = []; 
@@ -201,8 +199,9 @@
         }
 
         function createLink(url, label, className) {
-            if (!url || url === "N/A" || url.trim() === "" || url.toLowerCase().includes("no")) return ''; 
-            return `<a href="${url}" target="_blank" class="btn ${className}">${label}</a>`;
+            // 🚀 CLEANEST LOGIC: If there's text, show the button. No filters.
+            if (!url || url.trim() === "") return ''; 
+            return `<a href="${url.trim()}" target="_blank" class="btn ${className}">${label}</a>`;
         }
 
         window.onload = function() { setTimeout(universalInit, 500); };

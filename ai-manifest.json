@@ -1,0 +1,32 @@
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Werewolf3788 Movie Collection",
+  "description": "A curated list of movies available via multiple platforms with direct affiliate links.",
+  "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnwK6U18P1u1eAS8a_PqZzpOKxQ9AATL6RBH7CfxXQR10YPM63akRqxSDbNiXYJWs92tvobh6iqE7/pub?output=csv",
+  "author": {
+    "@type": "Person",
+    "name": "Werewolf3788"
+  },
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@type": "Movie",
+        "name": "Example Movie Title",
+        "image": "URL_FROM_COLUMN_1",
+        "offers": {
+          "@type": "Offer",
+          "url": "https://www.amazon.com/s?k=Example+Movie&tag=moviesanywhere02-20",
+          "offeredBy": "Amazon"
+        }
+      }
+    }
+  ],
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://www.amazon.com/s?k={search_term_string}&tag=moviesanywhere02-20",
+    "query-input": "required name=search_term_string"
+  }
+}

@@ -7,6 +7,9 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie's Anywhere | Universal Hub</title>
+
+    <link rel="alternate" type="application/json" href="ai-manifest.json">
+    <meta name="robots" content="index, follow, max-image-preview:large">
     
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js" crossorigin="anonymous"></script>
@@ -150,7 +153,6 @@
             const bar = document.getElementById('top-counter-bar');
             bar.classList.add('syncing');
 
-            // Fetch with cache-buster
             const liveUrl = csvUrl + '&v=' + Date.now();
             
             Papa.parse(liveUrl, {
@@ -169,20 +171,17 @@
                         return title && title !== "Unknown Title";
                     });
 
-                    // Only refresh the DOM if the data is actually different
                     if (JSON.stringify(newData) !== JSON.stringify(movieLibraryMaster)) {
                         movieLibraryMaster = newData;
                         movieLibraryMaster.sort((a, b) => getTitle(a).localeCompare(getTitle(b)));
                         renderMovies(movieLibraryMaster); 
                     }
 
-                    // Pulse effect duration
                     setTimeout(() => bar.classList.remove('syncing'), 1000);
                 }
             });
         }
 
-        // The Heartbeat Timer
         setInterval(universalInit, refreshRate);
 
         function getTitle(row) {
@@ -222,7 +221,6 @@
 
             data.forEach(row => {
                 const name = getTitle(row);
-                // Keep search filter active during live updates
                 if (searchVal && !name.toLowerCase().includes(searchVal)) return;
 
                 const amz = getLink(row, ['amazon', 'amz', 'amazon link']);

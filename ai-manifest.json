@@ -1,44 +1,33 @@
 {
   "@context": "https://schema.org",
-  "@type": "ItemList",
-  "name": "Werewolf3788 Movie Collection",
-  "description": "A curated library of digital movies with multi-platform viewing options.",
-  "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnwK6U18P1u1eAS8a_PqZzpOKxQ9AATL6RBH7CfxXQR10YPM63akRqxSDbNiXYJWs92tvobh6iqE7/pub?output=csv",
-  "numberOfItems": "1000+",
-  "itemListOrder": "https://schema.org/ItemListOrderDescending",
-  "author": {
-    "@type": "Person",
-    "name": "Werewolf3788",
-    "url": "https://github.com/KFruti88"
-  },
-  "potentialAction": [
+  "@graph": [
     {
-      "@type": "BuyAction",
-      "target": "https://www.amazon.com/s?k={movie_name}+movie&tag=moviesanywhere02-20",
-      "name": "Buy on Amazon",
-      "description": "Monetized affiliate link for movie purchases."
+      "@type": "WebSite",
+      "name": "Movies Anywhere | Universal Hub",
+      "url": "https://kfruti88.github.io/Movies-Anywhere/",
+      "description": "Werewolf3788's collection of 1,000+ movies with direct viewing links.",
+      "potentialAction": {
+        "@type": "BuyAction",
+        "target": "https://www.amazon.com/s?k={movie_name}+movie&tag=moviesanywhere02-20",
+        "query-input": "required name=movie_name"
+      }
     },
     {
-      "@type": "WatchAction",
-      "target": "{platform_url}",
-      "name": "Watch on Alternative Platforms",
-      "description": "Convenience links for Google, YouTube, Movies Anywhere, Apple TV, and Fandango."
+      "@type": "ItemList",
+      "name": "Werewolf3788 Movie Collection",
+      "description": "A curated library of digital movies with multi-platform viewing options.",
+      "url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnwK6U18P1u1eAS8a_PqZzpOKxQ9AATL6RBH7CfxXQR10YPM63akRqxSDbNiXYJWs92tvobh6iqE7/pub?output=csv",
+      "numberOfItems": "1076",
+      "itemListOrder": "https://schema.org/ItemListOrderDescending",
+      "author": {
+        "@type": "Person",
+        "name": "Werewolf3788",
+        "url": "https://github.com/KFruti88"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "breadcrumb": "Home > Movies > Library"
+      }
     }
-  ],
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "breadcrumb": "Home > Movies > Library"
-  }
-}
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Movies Anywhere | Universal Hub",
-  "url": "https://kfruti88.github.io/Movies-Anywhere/",
-  "description": "Werewolf3788's collection of 1,000+ movies with direct viewing links.",
-  "potentialAction": {
-    "@type": "BuyAction",
-    "target": "https://www.amazon.com/s?k={movie_name}+movie&tag=moviesanywhere02-20",
-    "query-input": "required name=movie_name"
-  }
+  ]
 }

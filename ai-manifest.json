@@ -30,3 +30,15 @@
     "breadcrumb": "Home > Movies > Library"
   }
 }
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Movies Anywhere | Universal Hub",
+  "url": "https://kfruti88.github.io/Movies-Anywhere/",
+  "description": "Werewolf3788's collection of 1,000+ movies with direct viewing links.",
+  "potentialAction": {
+    "@type": "BuyAction",
+    "target": "https://www.amazon.com/s?k={movie_name}+movie&tag=moviesanywhere02-20",
+    "query-input": "required name=movie_name"
+  }
+}

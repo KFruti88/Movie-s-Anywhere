@@ -18,7 +18,8 @@
             --amazon-orange: #ff9900;
             --yt-red: #ff0000;
             --goog-blue: #4285f4;
-            --goog-green: #34a853;
+            --apple-grey: #555555;
+            --fandango-orange: #ff7300;
         }
 
         body {
@@ -30,12 +31,23 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        #wp-custom-wrapper {
+            width: 90%;
+            max-width: 2800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: transparent;
+        }
+
         #top-counter-bar {
             position: fixed; top: 0; width: 100%;
             background: rgba(10, 10, 10, 0.95);
             border-bottom: 2px solid var(--ma-blue);
             padding: 10px 0; text-align: center; z-index: 1000;
             backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center; gap: 12px;
         }
 
         #movie-count-badge {
@@ -43,11 +55,21 @@
             text-transform: uppercase;
         }
 
+        /* Live Sync Pulse Dot */
+        #sync-indicator {
+            width: 10px; height: 10px; background: #333; border-radius: 50%;
+            transition: all 0.4s ease;
+        }
+        .syncing #sync-indicator { 
+            background: #00ff00; 
+            box-shadow: 0 0 12px #00ff00;
+            transform: scale(1.2);
+        }
+
         #movie-container {
-            width: 90% !important; 
-            max-width: 2800px; 
+            width: 100%; 
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
             gap: 20px;
             margin-top: 40px; margin-bottom: 60px;
         }
@@ -55,13 +77,13 @@
         .header-section { margin-top: 120px; text-align: center; }
 
         .search-wrapper {
-            width: 90%; max-width: 600px; margin: 10px 0 20px 0;
-            display: flex; flex-direction: column; align-items: center;
+            width: 100%; max-width: 600px; margin: 10px 0 30px 0;
         }
 
         #movie-search {
-            width: 100%; padding: 12px 25px; border-radius: 30px; border: 2px solid #333;
-            background: #151515; color: white; font-size: 1rem; outline: none;
+            width: 100%; padding: 15px 25px; border-radius: 30px; border: 2px solid #333;
+            background: #151515; color: white; font-size: 1.1rem; outline: none;
+            box-sizing: border-box;
         }
 
         .movie-card {
@@ -75,82 +97,103 @@
         .poster-box { width: 100%; aspect-ratio: 2/3; background-color: #000; }
         .poster { width: 100%; height: 100%; object-fit: cover; display: block; }
         
-        .card-content { padding: 10px; text-align: center; background: #141414; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .title { font-size: 0.85rem; font-weight: bold; margin-bottom: 12px; min-height: 2.5rem; display: flex; align-items: center; justify-content: center; }
+        .card-content { padding: 12px; text-align: center; background: #141414; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .title { font-size: 0.9rem; font-weight: bold; margin-bottom: 12px; min-height: 2.5rem; display: flex; align-items: center; justify-content: center; line-height: 1.2; }
         
         .link-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-        .btn { padding: 7px 1px; text-decoration: none; border-radius: 4px; font-size: 0.65rem; font-weight: 800; color: white; text-align: center; text-transform: uppercase; }
+        .btn { padding: 8px 2px; text-decoration: none; border-radius: 4px; font-size: 0.65rem; font-weight: 800; color: white; text-align: center; text-transform: uppercase; }
         
-        .btn-amazon { background: var(--amazon-orange); color: #000; }
+        .btn-amazon { background: var(--amazon-orange); color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
         .btn-google { background: var(--goog-blue); }
         .btn-youtube { background: var(--yt-red); }
         .btn-ma { background: var(--ma-blue); }
+        .btn-apple { background: var(--apple-grey); }
+        .btn-fandango { background: var(--fandango-orange); }
 
         @media (max-width: 768px) {
-            #movie-container { width: 95% !important; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            #movie-container { grid-template-columns: 1fr; width: 100%; }
+            .poster-box { aspect-ratio: 1/1; }
+            #movie-search { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
     <div id="top-counter-bar">
-        <div id="movie-count-badge">Collection Loading...</div>
+        <div id="sync-indicator"></div>
+        <div id="movie-count-badge">Syncing Cinema Library...</div>
     </div>
 
-    <div class="header-section">
-        <h1 style="font-size: 2.8rem; font-weight: 900; margin-bottom: 5px;">
-            <span style="color: var(--ma-blue);">M</span><span style="color: var(--amazon-orange);">o</span><span style="color: var(--yt-red);">v</span><span style="color: var(--goog-blue);">i</span><span style="color: var(--goog-green);">e's</span> 
-            <span style="color: var(--ma-blue);">A</span><span style="color: var(--amazon-orange);">n</span><span style="color: var(--yt-red);">y</span><span style="color: var(--goog-blue);">w</span><span style="color: var(--goog-green);">h</span><span style="color: var(--ma-blue);">e</span><span style="color: var(--amazon-orange);">r</span><span style="color: var(--yt-red);">e</span>
-        </h1>
-    </div>
+    <div id="wp-custom-wrapper">
+        <div class="header-section">
+            <h1 style="font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 900; margin-bottom: 5px;">
+                <span style="color: var(--ma-blue);">M</span><span style="color: var(--amazon-orange);">o</span><span style="color: var(--yt-red);">v</span><span style="color: var(--goog-blue);">i</span><span style="color: white;">e's</span> 
+                <span style="color: var(--ma-blue);">A</span><span style="color: var(--amazon-orange);">n</span><span style="color: var(--yt-red);">y</span><span style="color: var(--goog-blue);">w</span><span style="color: var(--apple-grey);">h</span><span style="color: var(--ma-blue);">e</span><span style="color: var(--amazon-orange);">r</span><span style="color: var(--yt-red);">e</span>
+            </h1>
+        </div>
 
-    <div class="search-wrapper">
-        <input type="text" id="movie-search" placeholder="Filter by title..." onkeyup="filterCollection()">
-    </div>
+        <div class="search-wrapper">
+            <input type="text" id="movie-search" placeholder="Filter 1,077 items..." onkeyup="filterCollection()">
+        </div>
 
-    <div id="movie-container">Syncing Cinema Library...</div>
+        <div id="movie-container">Loading Library...</div>
+    </div>
 
     <script>
         let movieLibraryMaster = []; 
-        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnwK6U18P1u1eAS8a_PqZzpOKxQ9AATL6RBH7CfxXQR10YPM63akRqxSDbNiXYJWs92tvobh6iqE7/pub?output=csv' + '&v=' + Date.now();
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnwK6U18P1u1eAS8a_PqZzpOKxQ9AATL6RBH7CfxXQR10YPM63akRqxSDbNiXYJWs92tvobh6iqE7/pub?output=csv';
         const githubBase = 'https://raw.githubusercontent.com/KFruti88/Movies-Anywhere/main/images/';
+        const amzTag = 'moviesanywhere02-20';
+        const refreshRate = 120000; // Check every 2 mins
 
         function universalInit() {
-            Papa.parse(csvUrl, {
+            const bar = document.getElementById('top-counter-bar');
+            bar.classList.add('syncing');
+
+            // Fetch with cache-buster
+            const liveUrl = csvUrl + '&v=' + Date.now();
+            
+            Papa.parse(liveUrl, {
                 download: true,
                 header: true,
-                skipEmptyLines: true,
+                skipEmptyLines: 'greedy',
                 complete: function(results) { 
-                    movieLibraryMaster = results.data.map(row => {
-                        let newRow = {};
-                        for (let key in row) {
-                            newRow[key.trim().toLowerCase()] = row[key];
-                        }
-                        return newRow;
+                    const newData = results.data.map(row => {
+                        let cleanRow = {};
+                        Object.keys(row).forEach(key => {
+                            if (key) cleanRow[key.trim().toLowerCase()] = row[key];
+                        });
+                        return cleanRow;
                     }).filter(row => {
-                        const name = row['movie name'] || row['name'] || row['title'];
-                        return name && name.toString().trim() !== "";
+                        const title = getTitle(row);
+                        return title && title !== "Unknown Title";
                     });
 
-                    movieLibraryMaster.sort((a, b) => {
-                        const nameA = (a['movie name'] || a['name'] || "").toString().toUpperCase();
-                        const nameB = (b['movie name'] || b['name'] || "").toString().toUpperCase();
-                        return nameA.localeCompare(nameB);
-                    });
+                    // Only refresh the DOM if the data is actually different
+                    if (JSON.stringify(newData) !== JSON.stringify(movieLibraryMaster)) {
+                        movieLibraryMaster = newData;
+                        movieLibraryMaster.sort((a, b) => getTitle(a).localeCompare(getTitle(b)));
+                        renderMovies(movieLibraryMaster); 
+                    }
 
-                    renderMovies(movieLibraryMaster); 
+                    // Pulse effect duration
+                    setTimeout(() => bar.classList.remove('syncing'), 1000);
                 }
             });
         }
 
-        function getValidLink(row, keys) {
+        // The Heartbeat Timer
+        setInterval(universalInit, refreshRate);
+
+        function getTitle(row) {
+            return row['movie name'] || row['name'] || row['title'] || row['movie title'] || row['item'] || Object.values(row)[0] || "Unknown Title";
+        }
+
+        function getLink(row, keys) {
             for (let key of keys) {
                 let val = row[key.toLowerCase()];
-                if (val) {
-                    let clean = val.toString().trim();
-                    if (clean !== "" && clean.toUpperCase() !== "N/A") {
-                        return clean;
-                    }
+                if (val && val.toString().trim() !== "" && val.toString().toUpperCase() !== "N/A") {
+                    return val.toString().trim();
                 }
             }
             return null;
@@ -159,51 +202,51 @@
         function fixImageUrl(row) {
             let val = row['movie image'] || row['image'] || row['poster'] || '';
             let clean = val.toString().trim();
-            
-            if (clean === "" || clean.toUpperCase() === "N/A") {
-                return `https://placehold.co/400x600/1a1a1a/0099ff?text=Poster+Pending`;
-            }
+            if (clean === "" || clean.toUpperCase() === "N/A") return `https://placehold.co/400x600/1a1a1a/0099ff?text=Poster+Pending`;
 
-            // 🛠️ AUTOMATIC GITHUB FIX: Convert browser links to raw image links
             if (clean.includes('github.com')) {
-                clean = clean.replace('github.com', 'raw.githubusercontent.com')
-                             .replace('/blob/', '/')
-                             .replace('/tree/', '/');
-            } 
-            // If it's just the filename, add the base
-            else if (!clean.startsWith('http')) {
+                clean = clean.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/').replace('/tree/', '/');
+            } else if (!clean.startsWith('http')) {
                 clean = githubBase + clean;
             }
-            
             return clean + (clean.includes('?') ? '&' : '?') + 'v=' + Date.now();
         }
 
         function renderMovies(data) {
             const container = document.getElementById('movie-container');
+            const badge = document.getElementById('movie-count-badge');
+            const searchVal = document.getElementById('movie-search').value.toLowerCase();
+            
             container.innerHTML = '';
-            document.getElementById('movie-count-badge').innerText = `Library Synced: ${data.length} Movies`;
+            badge.innerText = `Library Synced: ${data.length} Titles`;
 
             data.forEach(row => {
-                const name = row['movie name'] || row['name'] || "Unknown Title";
-                
-                const amz = getValidLink(row, ['Amazon', 'Amazon Link', 'AMZ']);
-                const goo = getValidLink(row, ['Google', 'Google Play', 'Google Link']);
-                const yt = getValidLink(row, ['Youtube', 'YouTube Link', 'YT']);
-                const ma = getValidLink(row, ["Movie's Anywhere", "Movies Anywhere", "Anywhere", "MA"]);
+                const name = getTitle(row);
+                // Keep search filter active during live updates
+                if (searchVal && !name.toLowerCase().includes(searchVal)) return;
+
+                const amz = getLink(row, ['amazon', 'amz', 'amazon link']);
+                const goo = getLink(row, ['google', 'google play', 'google link']);
+                const yt = getLink(row, ['youtube', 'yt', 'youtube link']);
+                const ma = getLink(row, ["movies anywhere", "ma"]);
+                const apple = getLink(row, ['apple tv', 'apple', 'itunes']);
+                const fan = getLink(row, ['fandango', 'vudu', 'fandango at home']);
 
                 const card = document.createElement('div');
                 card.className = 'movie-card';
                 card.innerHTML = `
                     <div class="poster-box">
-                        <img src="${fixImageUrl(row)}" alt="${name}" class="poster" onerror="this.src='https://placehold.co/400x600/1a1a1a/0099ff?text=Poster+Error'">
+                        <img src="${fixImageUrl(row)}" alt="${name}" class="poster" loading="lazy" onerror="this.src='https://placehold.co/400x600/1a1a1a/0099ff?text=Poster+Error'">
                     </div>
                     <div class="card-content">
                         <div class="title">${name}</div>
                         <div class="link-grid">
-                            ${amz ? `<a href="${amz}${amz.includes('?') ? '&' : '?'}tag=werewolf3788-20" target="_blank" class="btn btn-amazon">Amazon</a>` : ''}
+                            ${amz ? `<a href="${amz}${amz.includes('?') ? '&' : '?'}tag=${amzTag}" target="_blank" class="btn btn-amazon">Amazon</a>` : ''}
                             ${goo ? `<a href="${goo}" target="_blank" class="btn btn-google">Google</a>` : ''}
                             ${yt ? `<a href="${yt}" target="_blank" class="btn btn-youtube">YouTube</a>` : ''}
                             ${ma ? `<a href="${ma}" target="_blank" class="btn btn-ma">Anywhere</a>` : ''}
+                            ${apple ? `<a href="${apple}" target="_blank" class="btn btn-apple">Apple TV</a>` : ''}
+                            ${fan ? `<a href="${fan}" target="_blank" class="btn btn-fandango">Fandango</a>` : ''}
                         </div>
                     </div>
                 `;
@@ -212,12 +255,7 @@
         }
 
         function filterCollection() {
-            const val = document.getElementById('movie-search').value.toLowerCase();
-            const filtered = movieLibraryMaster.filter(movie => {
-                const name = (movie['movie name'] || movie['name'] || "").toString().toLowerCase();
-                return name.includes(val);
-            });
-            renderMovies(filtered);
+            renderMovies(movieLibraryMaster);
         }
 
         window.onload = function() { setTimeout(universalInit, 300); };

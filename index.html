@@ -140,16 +140,13 @@
 
     <script>
         let movieLibraryMaster = []; 
-        let libraryVersion = Date.now();
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnwK6U18P1u1eAS8a_PqZzpOKxQ9AATL6RBH7CfxXQR10YPM63akRqxSDbNiXYJWs92tvobh6iqE7/pub?output=csv';
         const githubBase = 'https://raw.githubusercontent.com/KFruti88/Movies-Anywhere/main/images/';
-        const amzTag = 'moviesanywhere02-20';
         const refreshRate = 120000; 
 
         function universalInit() {
             const bar = document.getElementById('top-counter-bar');
             bar.classList.add('syncing');
-
             const liveUrl = csvUrl + '&v=' + Date.now();
             
             Papa.parse(liveUrl, {
@@ -160,21 +157,18 @@
                     const newData = results.data.map(row => {
                         let cleanRow = {};
                         Object.keys(row).forEach(key => {
-                            if (key) cleanRow[key.trim().toLowerCase()] = row[key];
+                            if (key) cleanRow[key.trim()] = row[key];
                         });
                         return cleanRow;
                     }).filter(row => {
-                        const title = getTitle(row);
-                        return title && title !== "Unknown Title";
+                        return row['Name'] && row['Name'] !== "Unknown Title";
                     });
 
                     if (JSON.stringify(newData) !== JSON.stringify(movieLibraryMaster)) {
                         movieLibraryMaster = newData;
-                        movieLibraryMaster.sort((a, b) => getTitle(a).localeCompare(getTitle(b)));
-                        libraryVersion = Date.now();
+                        movieLibraryMaster.sort((a, b) => a['Name'].localeCompare(b['Name']));
                         renderMovies(movieLibraryMaster); 
                     }
-
                     setTimeout(() => bar.classList.remove('syncing'), 1000);
                 }
             });
@@ -182,69 +176,46 @@
 
         setInterval(universalInit, refreshRate);
 
-        function getTitle(row) {
-            return row['name'] || row['movie name'] || row['title'] || row['movie title'] || row['item'] || Object.values(row)[1] || "Unknown Title";
-        }
-
-        // New Aggressive Link Detector
-        function getLink(row, searchTerms) {
-            const rowKeys = Object.keys(row);
-            for (let term of searchTerms) {
-                const cleanTerm = term.toLowerCase().replace(/[^a-z0-9]/g, '');
-                for (let actualKey of rowKeys) {
-                    const cleanActual = actualKey.toLowerCase().replace(/[^a-z0-9]/g, '');
-                    if (cleanActual.includes(cleanTerm)) {
-                        let val = row[actualKey];
-                        if (val && val.toString().trim() !== "" && val.toString().toUpperCase() !== "N/A") {
-                            return val.toString().trim();
-                        }
-                    }
-                }
+        // Direct check: Only returns URL if it's valid, otherwise null kills the button
+        function checkURL(val) {
+            if (val && val.toString().trim().toLowerCase().startsWith('http')) {
+                return val.toString().trim();
             }
             return null;
         }
 
         function fixImageUrl(row) {
-            let val = row['image'] || row['movie image'] || Object.values(row)[0] || '';
+            let val = row['IMAGE'] || "";
             let clean = val.toString().trim();
-            if (clean === "" || clean.toUpperCase() === "N/A") return `https://placehold.co/400x600/1a1a1a/0099ff?text=Poster+Pending`;
-
-            if (clean.includes('googleusercontent.com')) {
-                if (!clean.includes('=') && !clean.includes('-')) {
-                    clean = clean + '=w600';
-                } else if (clean.includes('=')) {
-                    clean = clean.split('=')[0] + '=w600';
-                }
+            if (clean === "" || !clean.toLowerCase().startsWith('http')) {
+                 return `https://placehold.co/400x600/1a1a1a/0099ff?text=Poster+Pending`;
             }
-
+            // Basic raw file fix for GitHub
             if (clean.includes('github.com')) {
                 clean = clean.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/').replace('/tree/', '/');
-            } else if (!clean.startsWith('http')) {
-                clean = githubBase + clean;
             }
-            return clean + (clean.includes('?') ? '&' : '?') + 'v=' + libraryVersion;
+            return clean + (clean.includes('?') ? '&' : '?') + 'v=' + Date.now();
         }
 
         function renderMovies(data) {
             const container = document.getElementById('movie-container');
             const badge = document.getElementById('movie-count-badge');
-            const searchInput = document.getElementById('movie-search');
-            const searchVal = searchInput.value.toLowerCase();
+            const searchVal = document.getElementById('movie-search').value.toLowerCase();
             
             container.innerHTML = '';
             badge.innerText = `Library Synced: ${data.length} Titles`;
-            searchInput.placeholder = `Filter ${data.length.toLocaleString()} items...`;
 
             data.forEach(row => {
-                const name = getTitle(row);
+                const name = row['Name'] || "Unknown Title";
                 if (searchVal && !name.toLowerCase().includes(searchVal)) return;
 
-                const amz = getLink(row, ['amazon', 'amz']);
-                const goo = getLink(row, ['google', 'play']);
-                const yt = getLink(row, ['youtube', 'yt']);
-                const ma = getLink(row, ['anywhere', 'ma']);
-                const apple = getLink(row, ['apple', 'itunes']);
-                const fan = getLink(row, ['fandango', 'vudu']);
+                // Strict column mapping - only shows if sheet has a full URL
+                const amz = checkURL(row['AMAZON']);
+                const goo = checkURL(row['GOOGLE']);
+                const yt = checkURL(row['YOUTUBE']);
+                const ma = checkURL(row["Movie's Anywhere"]);
+                const apple = checkURL(row['Apple Tv']);
+                const fan = checkURL(row['Fandango / Vudu']);
 
                 const card = document.createElement('div');
                 card.className = 'movie-card';
@@ -255,7 +226,7 @@
                     <div class="card-content">
                         <div class="title">${name}</div>
                         <div class="link-grid">
-                            ${amz ? `<a href="${amz}${amz.includes('?') ? '&' : '?'}tag=${amzTag}" target="_blank" class="btn btn-amazon">Amazon</a>` : ''}
+                            ${amz ? `<a href="${amz}" target="_blank" class="btn btn-amazon">Amazon</a>` : ''}
                             ${goo ? `<a href="${goo}" target="_blank" class="btn btn-google">Google</a>` : ''}
                             ${yt ? `<a href="${yt}" target="_blank" class="btn btn-youtube">YouTube</a>` : ''}
                             ${ma ? `<a href="${ma}" target="_blank" class="btn btn-ma">Anywhere</a>` : ''}

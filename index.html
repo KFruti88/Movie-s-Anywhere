@@ -32,6 +32,7 @@
             overflow-x: hidden;
         }
 
+        /* 90% Width Universal Wrapper */
         #wp-custom-wrapper {
             width: 90%;
             max-width: 2800px;
@@ -104,15 +105,33 @@
         .title { font-size: 0.85rem; font-weight: bold; margin-bottom: 12px; min-height: 2.5rem; display: flex; align-items: center; justify-content: center; line-height: 1.2; }
         
         .link-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-        .btn { padding: 8px 2px; text-decoration: none; border-radius: 4px; font-size: 0.6rem; font-weight: 800; color: white; text-align: center; text-transform: uppercase; }
         
-        .btn-amazon { background: var(--amazon-orange); color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        /* Gussied up Buttons: High contrast white text with shadow */
+        .btn { 
+            padding: 8px 2px; 
+            text-decoration: none; 
+            border-radius: 4px; 
+            font-size: 0.6rem; 
+            font-weight: 900; 
+            color: #ffffff !important; /* Force pure white */
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.8); /* Shadow for legibility */
+            text-align: center; 
+            text-transform: uppercase; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: filter 0.2s ease;
+        }
+        .btn:hover { filter: brightness(1.2); }
+        
+        .btn-amazon { background: var(--amazon-orange); }
         .btn-google { background: var(--goog-blue); }
         .btn-youtube { background: var(--yt-red); }
         .btn-ma { background: var(--ma-blue); }
         .btn-apple { background: var(--apple-grey); }
         .btn-fandango { background: var(--fandango-orange); }
 
+        /* Mobile specific: 2 side by side, 1:1 ratio, centered */
         @media (max-width: 600px) {
             #wp-custom-wrapper { width: 95%; } 
             #movie-container { 
@@ -176,12 +195,17 @@
                         });
                         return cleanRow;
                     }).filter(row => {
-                        return row['Name'] && row['Name'].trim() !== "" && row['Name'] !== "Unknown Title";
+                        const name = getValCaseInsensitive(row, 'Name');
+                        return name && name.trim() !== "" && name !== "Unknown Title";
                     });
 
                     if (JSON.stringify(newData) !== JSON.stringify(movieLibraryMaster)) {
                         movieLibraryMaster = newData;
-                        movieLibraryMaster.sort((a, b) => a['Name'].localeCompare(b['Name']));
+                        movieLibraryMaster.sort((a, b) => {
+                            const nameA = (getValCaseInsensitive(a, 'Name') || "").toLowerCase();
+                            const nameB = (getValCaseInsensitive(b, 'Name') || "").toLowerCase();
+                            return nameA.localeCompare(nameB);
+                        });
                         renderMovies(movieLibraryMaster); 
                     }
                     setTimeout(() => bar.classList.remove('syncing'), 1000);
@@ -191,13 +215,10 @@
 
         setInterval(universalInit, refreshRate);
 
-        /**
-         * Checks if a value is a valid URL.
-         * Returns the URL string if valid, otherwise returns null.
-         */
         function checkURL(val) {
             if (!val) return null;
             let str = val.toString().trim();
+            if (str === "" || str === "-" || str.toLowerCase() === "n/a") return null;
             if (str.toLowerCase().startsWith('http')) {
                 return str;
             }
@@ -205,7 +226,7 @@
         }
 
         function fixImageUrl(row) {
-            let val = row['IMAGE'] || "";
+            let val = getValCaseInsensitive(row, 'IMAGE') || "";
             let clean = val.toString().trim();
             if (clean === "" || !clean.toLowerCase().startsWith('http')) {
                  return `https://placehold.co/400x600/1a1a1a/0099ff?text=Poster+Pending`;
@@ -217,11 +238,14 @@
         }
 
         /**
-         * Finds a key in the row object regardless of exact casing/spacing
+         * Enhanced Case-Insensitive key finder. 
+         * Strips all symbols to ensure "Apple TV" matches "AppleTv" or "Apple Tv".
          */
         function getValCaseInsensitive(obj, keyToFind) {
+            const cleanKey = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const target = cleanKey(keyToFind);
             const keys = Object.keys(obj);
-            const foundKey = keys.find(k => k.toLowerCase().replace(/['\s]/g, '') === keyToFind.toLowerCase().replace(/['\s]/g, ''));
+            const foundKey = keys.find(k => cleanKey(k) === target);
             return foundKey ? obj[foundKey] : null;
         }
 
@@ -233,16 +257,16 @@
             container.innerHTML = '';
             
             const filtered = data.filter(row => {
-                const name = row['Name'] || "Unknown Title";
+                const name = getValCaseInsensitive(row, 'Name') || "Unknown Title";
                 return name.toLowerCase().includes(searchVal);
             });
 
             badge.innerText = `Library Synced: ${filtered.length} Titles`;
 
             filtered.forEach(row => {
-                const name = row['Name'] || "Unknown Title";
+                const name = getValCaseInsensitive(row, 'Name') || "Unknown Title";
                 
-                // Flexible mapping to handle Sheet variations
+                // Column Mapping
                 const amz = checkURL(getValCaseInsensitive(row, 'AMAZON'));
                 const goo = checkURL(getValCaseInsensitive(row, 'GOOGLE'));
                 const yt = checkURL(getValCaseInsensitive(row, 'YOUTUBE'));

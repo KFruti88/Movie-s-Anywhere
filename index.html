@@ -114,7 +114,7 @@
 
         @media (max-width: 768px) {
             #movie-container { grid-template-columns: 1fr; width: 100%; }
-            .poster-box { aspect-ratio: 1/1; }
+            .poster-box { aspect-ratio: 1:1; } /* Responsive requirement */
             #movie-search { font-size: 1rem; }
         }
     </style>
@@ -135,7 +135,7 @@
         </div>
 
         <div class="search-wrapper">
-            <input type="text" id="movie-search" placeholder="Loading library count..." onkeyup="filterCollection()">
+            <input type="text" id="movie-search" placeholder="Syncing library..." onkeyup="filterCollection()">
         </div>
 
         <div id="movie-container">Loading Library...</div>
@@ -143,15 +143,17 @@
 
     <script>
         let movieLibraryMaster = []; 
+        let libraryVersion = Date.now(); // Initial version
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnwK6U18P1u1eAS8a_PqZzpOKxQ9AATL6RBH7CfxXQR10YPM63akRqxSDbNiXYJWs92tvobh6iqE7/pub?output=csv';
         const githubBase = 'https://raw.githubusercontent.com/KFruti88/Movies-Anywhere/main/images/';
         const amzTag = 'moviesanywhere02-20';
-        const refreshRate = 120000; 
+        const refreshRate = 120000; // Check every 2 mins
 
         function universalInit() {
             const bar = document.getElementById('top-counter-bar');
             bar.classList.add('syncing');
 
+            // Force fresh CSV fetch
             const liveUrl = csvUrl + '&v=' + Date.now();
             
             Papa.parse(liveUrl, {
@@ -170,9 +172,13 @@
                         return title && title !== "Unknown Title";
                     });
 
+                    // SMART SYNC: Only re-render if the data content actually changed
                     if (JSON.stringify(newData) !== JSON.stringify(movieLibraryMaster)) {
                         movieLibraryMaster = newData;
                         movieLibraryMaster.sort((a, b) => getTitle(a).localeCompare(getTitle(b)));
+                        
+                        // Increment version to update image cache ONLY when data changes
+                        libraryVersion = Date.now(); 
                         renderMovies(movieLibraryMaster); 
                     }
 
@@ -207,7 +213,9 @@
             } else if (!clean.startsWith('http')) {
                 clean = githubBase + clean;
             }
-            return clean + (clean.includes('?') ? '&' : '?') + 'v=' + Date.now();
+            
+            // Uses smart versioning: stays same in memory until sheet updates
+            return `${clean}?v=${libraryVersion}`;
         }
 
         function renderMovies(data) {
@@ -218,7 +226,7 @@
             
             container.innerHTML = '';
             
-            // This syncs the top bar and the search placeholder simultaneously
+            // Sync counts across the UI
             badge.innerText = `Library Synced: ${data.length} Titles`;
             searchInput.placeholder = `Filter ${data.length.toLocaleString()} items...`;
 

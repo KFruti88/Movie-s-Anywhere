@@ -7,9 +7,6 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie's Anywhere | Universal Hub</title>
-
-    <link rel="alternate" type="application/json" href="ai-manifest.json">
-    <meta name="robots" content="index, follow, max-image-preview:large">
     
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js" crossorigin="anonymous"></script>
@@ -114,7 +111,7 @@
 
         @media (max-width: 768px) {
             #movie-container { grid-template-columns: 1fr; width: 100%; }
-            .poster-box { aspect-ratio: 1:1; } /* Responsive requirement */
+            .poster-box { aspect-ratio: 1/1; }
             #movie-search { font-size: 1rem; }
         }
     </style>
@@ -135,7 +132,7 @@
         </div>
 
         <div class="search-wrapper">
-            <input type="text" id="movie-search" placeholder="Syncing library..." onkeyup="filterCollection()">
+            <input type="text" id="movie-search" placeholder="Filter library..." onkeyup="filterCollection()">
         </div>
 
         <div id="movie-container">Loading Library...</div>
@@ -143,17 +140,16 @@
 
     <script>
         let movieLibraryMaster = []; 
-        let libraryVersion = Date.now(); // Initial version
+        let libraryVersion = Date.now();
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnwK6U18P1u1eAS8a_PqZzpOKxQ9AATL6RBH7CfxXQR10YPM63akRqxSDbNiXYJWs92tvobh6iqE7/pub?output=csv';
         const githubBase = 'https://raw.githubusercontent.com/KFruti88/Movies-Anywhere/main/images/';
         const amzTag = 'moviesanywhere02-20';
-        const refreshRate = 120000; // Check every 2 mins
+        const refreshRate = 120000; 
 
         function universalInit() {
             const bar = document.getElementById('top-counter-bar');
             bar.classList.add('syncing');
 
-            // Force fresh CSV fetch
             const liveUrl = csvUrl + '&v=' + Date.now();
             
             Papa.parse(liveUrl, {
@@ -172,13 +168,10 @@
                         return title && title !== "Unknown Title";
                     });
 
-                    // SMART SYNC: Only re-render if the data content actually changed
                     if (JSON.stringify(newData) !== JSON.stringify(movieLibraryMaster)) {
                         movieLibraryMaster = newData;
                         movieLibraryMaster.sort((a, b) => getTitle(a).localeCompare(getTitle(b)));
-                        
-                        // Increment version to update image cache ONLY when data changes
-                        libraryVersion = Date.now(); 
+                        libraryVersion = Date.now();
                         renderMovies(movieLibraryMaster); 
                     }
 
@@ -190,32 +183,46 @@
         setInterval(universalInit, refreshRate);
 
         function getTitle(row) {
-            return row['movie name'] || row['name'] || row['title'] || row['movie title'] || row['item'] || Object.values(row)[0] || "Unknown Title";
+            return row['name'] || row['movie name'] || row['title'] || row['movie title'] || row['item'] || Object.values(row)[1] || "Unknown Title";
         }
 
-        function getLink(row, keys) {
-            for (let key of keys) {
-                let val = row[key.toLowerCase()];
-                if (val && val.toString().trim() !== "" && val.toString().toUpperCase() !== "N/A") {
-                    return val.toString().trim();
+        // New Aggressive Link Detector
+        function getLink(row, searchTerms) {
+            const rowKeys = Object.keys(row);
+            for (let term of searchTerms) {
+                const cleanTerm = term.toLowerCase().replace(/[^a-z0-9]/g, '');
+                for (let actualKey of rowKeys) {
+                    const cleanActual = actualKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    if (cleanActual.includes(cleanTerm)) {
+                        let val = row[actualKey];
+                        if (val && val.toString().trim() !== "" && val.toString().toUpperCase() !== "N/A") {
+                            return val.toString().trim();
+                        }
+                    }
                 }
             }
             return null;
         }
 
         function fixImageUrl(row) {
-            let val = row['movie image'] || row['image'] || row['poster'] || '';
+            let val = row['image'] || row['movie image'] || Object.values(row)[0] || '';
             let clean = val.toString().trim();
             if (clean === "" || clean.toUpperCase() === "N/A") return `https://placehold.co/400x600/1a1a1a/0099ff?text=Poster+Pending`;
+
+            if (clean.includes('googleusercontent.com')) {
+                if (!clean.includes('=') && !clean.includes('-')) {
+                    clean = clean + '=w600';
+                } else if (clean.includes('=')) {
+                    clean = clean.split('=')[0] + '=w600';
+                }
+            }
 
             if (clean.includes('github.com')) {
                 clean = clean.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/').replace('/tree/', '/');
             } else if (!clean.startsWith('http')) {
                 clean = githubBase + clean;
             }
-            
-            // Uses smart versioning: stays same in memory until sheet updates
-            return `${clean}?v=${libraryVersion}`;
+            return clean + (clean.includes('?') ? '&' : '?') + 'v=' + libraryVersion;
         }
 
         function renderMovies(data) {
@@ -225,8 +232,6 @@
             const searchVal = searchInput.value.toLowerCase();
             
             container.innerHTML = '';
-            
-            // Sync counts across the UI
             badge.innerText = `Library Synced: ${data.length} Titles`;
             searchInput.placeholder = `Filter ${data.length.toLocaleString()} items...`;
 
@@ -234,12 +239,12 @@
                 const name = getTitle(row);
                 if (searchVal && !name.toLowerCase().includes(searchVal)) return;
 
-                const amz = getLink(row, ['amazon', 'amz', 'amazon link']);
-                const goo = getLink(row, ['google', 'google play', 'google link']);
-                const yt = getLink(row, ['youtube', 'yt', 'youtube link']);
-                const ma = getLink(row, ["movies anywhere", "ma"]);
-                const apple = getLink(row, ['apple tv', 'apple', 'itunes']);
-                const fan = getLink(row, ['fandango', 'vudu', 'fandango at home']);
+                const amz = getLink(row, ['amazon', 'amz']);
+                const goo = getLink(row, ['google', 'play']);
+                const yt = getLink(row, ['youtube', 'yt']);
+                const ma = getLink(row, ['anywhere', 'ma']);
+                const apple = getLink(row, ['apple', 'itunes']);
+                const fan = getLink(row, ['fandango', 'vudu']);
 
                 const card = document.createElement('div');
                 card.className = 'movie-card';

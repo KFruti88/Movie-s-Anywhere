@@ -58,7 +58,6 @@
             text-transform: uppercase;
         }
 
-        /* Live Sync Pulse Dot */
         #sync-indicator {
             width: 10px; height: 10px; background: #333; border-radius: 50%;
             transition: all 0.4s ease;
@@ -136,7 +135,7 @@
         </div>
 
         <div class="search-wrapper">
-            <input type="text" id="movie-search" placeholder="Filter 1,077 items..." onkeyup="filterCollection()">
+            <input type="text" id="movie-search" placeholder="Loading library count..." onkeyup="filterCollection()">
         </div>
 
         <div id="movie-container">Loading Library...</div>
@@ -147,7 +146,7 @@
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnwK6U18P1u1eAS8a_PqZzpOKxQ9AATL6RBH7CfxXQR10YPM63akRqxSDbNiXYJWs92tvobh6iqE7/pub?output=csv';
         const githubBase = 'https://raw.githubusercontent.com/KFruti88/Movies-Anywhere/main/images/';
         const amzTag = 'moviesanywhere02-20';
-        const refreshRate = 120000; // Check every 2 mins
+        const refreshRate = 120000; 
 
         function universalInit() {
             const bar = document.getElementById('top-counter-bar');
@@ -214,10 +213,14 @@
         function renderMovies(data) {
             const container = document.getElementById('movie-container');
             const badge = document.getElementById('movie-count-badge');
-            const searchVal = document.getElementById('movie-search').value.toLowerCase();
+            const searchInput = document.getElementById('movie-search');
+            const searchVal = searchInput.value.toLowerCase();
             
             container.innerHTML = '';
+            
+            // This syncs the top bar and the search placeholder simultaneously
             badge.innerText = `Library Synced: ${data.length} Titles`;
+            searchInput.placeholder = `Filter ${data.length.toLocaleString()} items...`;
 
             data.forEach(row => {
                 const name = getTitle(row);

@@ -29,6 +29,7 @@
             margin: 0; padding: 0;
             display: flex; flex-direction: column; align-items: center;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
         #wp-custom-wrapper {
@@ -39,6 +40,7 @@
             flex-direction: column;
             align-items: center;
             background: transparent;
+            box-sizing: border-box;
         }
 
         #top-counter-bar {
@@ -68,12 +70,13 @@
         #movie-container {
             width: 100%; 
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
             gap: 20px;
             margin-top: 40px; margin-bottom: 60px;
+            box-sizing: border-box;
         }
 
-        .header-section { margin-top: 120px; text-align: center; }
+        .header-section { margin-top: 120px; text-align: center; width: 100%; }
 
         .search-wrapper {
             width: 100%; max-width: 600px; margin: 10px 0 30px 0;
@@ -90,6 +93,7 @@
             border: 1px solid #333; border-radius: 12px; overflow: hidden;
             display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.7);
             transition: all 0.3s ease;
+            height: 100%;
         }
 
         .movie-card:hover { transform: translateY(-8px); border-color: var(--ma-blue); }
@@ -97,10 +101,10 @@
         .poster { width: 100%; height: 100%; object-fit: cover; display: block; }
         
         .card-content { padding: 12px; text-align: center; background: #141414; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .title { font-size: 0.9rem; font-weight: bold; margin-bottom: 12px; min-height: 2.5rem; display: flex; align-items: center; justify-content: center; line-height: 1.2; }
+        .title { font-size: 0.85rem; font-weight: bold; margin-bottom: 12px; min-height: 2.5rem; display: flex; align-items: center; justify-content: center; line-height: 1.2; }
         
         .link-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-        .btn { padding: 8px 2px; text-decoration: none; border-radius: 4px; font-size: 0.65rem; font-weight: 800; color: white; text-align: center; text-transform: uppercase; }
+        .btn { padding: 8px 2px; text-decoration: none; border-radius: 4px; font-size: 0.6rem; font-weight: 800; color: white; text-align: center; text-transform: uppercase; }
         
         .btn-amazon { background: var(--amazon-orange); color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
         .btn-google { background: var(--goog-blue); }
@@ -109,10 +113,19 @@
         .btn-apple { background: var(--apple-grey); }
         .btn-fandango { background: var(--fandango-orange); }
 
-        @media (max-width: 768px) {
-            #movie-container { grid-template-columns: 1fr; width: 100%; }
-            .poster-box { aspect-ratio: 1/1; }
+        @media (max-width: 600px) {
+            #wp-custom-wrapper { width: 95%; } 
+            #movie-container { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 10px; 
+                width: 100%;
+                justify-content: center;
+            }
+            .poster-box { aspect-ratio: 1/1; } 
             #movie-search { font-size: 1rem; }
+            .title { font-size: 0.7rem; min-height: 2rem; }
+            .btn { font-size: 0.5rem; padding: 6px 1px; }
+            .link-grid { gap: 4px; }
         }
     </style>
 </head>
@@ -125,7 +138,7 @@
 
     <div id="wp-custom-wrapper">
         <div class="header-section">
-            <h1 style="font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 900; margin-bottom: 5px;">
+            <h1 style="font-size: clamp(1.5rem, 8vw, 3rem); font-weight: 900; margin-bottom: 5px;">
                 <span style="color: var(--ma-blue);">M</span><span style="color: var(--amazon-orange);">o</span><span style="color: var(--yt-red);">v</span><span style="color: var(--goog-blue);">i</span><span style="color: white;">e's</span> 
                 <span style="color: var(--ma-blue);">A</span><span style="color: var(--amazon-orange);">n</span><span style="color: var(--yt-red);">y</span><span style="color: var(--goog-blue);">w</span><span style="color: var(--apple-grey);">h</span><span style="color: var(--ma-blue);">e</span><span style="color: var(--amazon-orange);">r</span><span style="color: var(--yt-red);">e</span>
             </h1>
@@ -141,7 +154,6 @@
     <script>
         let movieLibraryMaster = []; 
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbnwK6U18P1u1eAS8a_PqZzpOKxQ9AATL6RBH7CfxXQR10YPM63akRqxSDbNiXYJWs92tvobh6iqE7/pub?output=csv';
-        const githubBase = 'https://raw.githubusercontent.com/KFruti88/Movies-Anywhere/main/images/';
         const refreshRate = 120000; 
 
         function universalInit() {
@@ -157,11 +169,14 @@
                     const newData = results.data.map(row => {
                         let cleanRow = {};
                         Object.keys(row).forEach(key => {
-                            if (key) cleanRow[key.trim()] = row[key];
+                            if (key) {
+                                let trimmedKey = key.trim();
+                                cleanRow[trimmedKey] = row[key];
+                            }
                         });
                         return cleanRow;
                     }).filter(row => {
-                        return row['Name'] && row['Name'] !== "Unknown Title";
+                        return row['Name'] && row['Name'].trim() !== "" && row['Name'] !== "Unknown Title";
                     });
 
                     if (JSON.stringify(newData) !== JSON.stringify(movieLibraryMaster)) {
@@ -176,10 +191,15 @@
 
         setInterval(universalInit, refreshRate);
 
-        // Direct check: Only returns URL if it's valid, otherwise null kills the button
+        /**
+         * Checks if a value is a valid URL.
+         * Returns the URL string if valid, otherwise returns null.
+         */
         function checkURL(val) {
-            if (val && val.toString().trim().toLowerCase().startsWith('http')) {
-                return val.toString().trim();
+            if (!val) return null;
+            let str = val.toString().trim();
+            if (str.toLowerCase().startsWith('http')) {
+                return str;
             }
             return null;
         }
@@ -190,11 +210,19 @@
             if (clean === "" || !clean.toLowerCase().startsWith('http')) {
                  return `https://placehold.co/400x600/1a1a1a/0099ff?text=Poster+Pending`;
             }
-            // Basic raw file fix for GitHub
             if (clean.includes('github.com')) {
                 clean = clean.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/').replace('/tree/', '/');
             }
             return clean + (clean.includes('?') ? '&' : '?') + 'v=' + Date.now();
+        }
+
+        /**
+         * Finds a key in the row object regardless of exact casing/spacing
+         */
+        function getValCaseInsensitive(obj, keyToFind) {
+            const keys = Object.keys(obj);
+            const foundKey = keys.find(k => k.toLowerCase().replace(/['\s]/g, '') === keyToFind.toLowerCase().replace(/['\s]/g, ''));
+            return foundKey ? obj[foundKey] : null;
         }
 
         function renderMovies(data) {
@@ -203,19 +231,24 @@
             const searchVal = document.getElementById('movie-search').value.toLowerCase();
             
             container.innerHTML = '';
-            badge.innerText = `Library Synced: ${data.length} Titles`;
-
-            data.forEach(row => {
+            
+            const filtered = data.filter(row => {
                 const name = row['Name'] || "Unknown Title";
-                if (searchVal && !name.toLowerCase().includes(searchVal)) return;
+                return name.toLowerCase().includes(searchVal);
+            });
 
-                // Strict column mapping - only shows if sheet has a full URL
-                const amz = checkURL(row['AMAZON']);
-                const goo = checkURL(row['GOOGLE']);
-                const yt = checkURL(row['YOUTUBE']);
-                const ma = checkURL(row["Movie's Anywhere"]);
-                const apple = checkURL(row['Apple Tv']);
-                const fan = checkURL(row['Fandango / Vudu']);
+            badge.innerText = `Library Synced: ${filtered.length} Titles`;
+
+            filtered.forEach(row => {
+                const name = row['Name'] || "Unknown Title";
+                
+                // Flexible mapping to handle Sheet variations
+                const amz = checkURL(getValCaseInsensitive(row, 'AMAZON'));
+                const goo = checkURL(getValCaseInsensitive(row, 'GOOGLE'));
+                const yt = checkURL(getValCaseInsensitive(row, 'YOUTUBE'));
+                const ma = checkURL(getValCaseInsensitive(row, "MoviesAnywhere"));
+                const apple = checkURL(getValCaseInsensitive(row, 'AppleTV'));
+                const fan = checkURL(getValCaseInsensitive(row, 'FandangoVudu'));
 
                 const card = document.createElement('div');
                 card.className = 'movie-card';

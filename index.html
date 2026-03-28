@@ -1,6 +1,8 @@
 <div id="wp-custom-wrapper">
     <div id="library-header">
+        <!-- Live Clock for the ASUS ROG Strix Setup -->
         <div id="header-clock">Loading Time...</div>
+
         <div id="cinema-logo">WEREWOLF <span>CINEMA</span></div>
         <div id="movie-counter">Syncing Cinema Library...</div>
         
@@ -14,7 +16,7 @@
         </div>
 
         <div id="controls-container">
-            <input type="text" id="movie-search" placeholder="Search titles, years, genres, or editions..." onkeyup="runFilters()">
+            <input type="text" id="movie-search" placeholder="Search titles, actors, years, or genres..." onkeyup="runFilters()">
             <div id="filter-dropdowns">
                 <select id="type-select" class="f-select" onchange="runFilters()">
                     <option value="">All Content</option>
@@ -38,7 +40,6 @@
                     <option value="Horror">Horror</option>
                     <option value="Music">Music</option>
                     <option value="Mystery">Mystery</option>
-                    <option value="N/A">N/A</option>
                     <option value="Romance">Romance</option>
                     <option value="Science Fiction">Science Fiction</option>
                     <option value="TV Movie">TV Movie</option>
@@ -78,17 +79,17 @@
     margin: 0 auto; 
     color: #fff; 
     background: transparent !important;
-    font-family: 'Segoe UI', Roboto, sans-serif; 
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
     box-sizing: border-box; 
     padding-bottom: 140px; 
     overflow-x: hidden;
+    text-align: center;
 }
 #wp-custom-wrapper * { box-sizing: border-box; }
 
 #wp-custom-wrapper #library-header {
     position: relative; 
     margin-bottom: 30px; 
-    text-align: center; 
     background: rgba(0, 0, 0, 0.85); 
     backdrop-filter: blur(15px); 
     border: 1px solid rgba(255, 0, 0, 0.3); 
@@ -97,12 +98,8 @@
 }
 
 #wp-custom-wrapper #header-clock { 
-    position: absolute; 
-    top: 15px; 
-    right: 25px; 
-    font-size: 13px; 
-    font-weight: 800; 
-    color: #ff0000; 
+    position: absolute; top: 15px; right: 25px; 
+    font-size: 13px; font-weight: 800; color: #ff0000; 
     font-family: 'Courier New', monospace; 
     text-shadow: 0 0 10px rgba(255,0,0,0.8); 
 }
@@ -116,7 +113,6 @@
 #wp-custom-wrapper #movie-search { width: 100%; max-width: 600px; padding: 12px 20px; background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 50px; color: #fff; margin-bottom: 15px; outline: none; transition: border 0.3s; }
 #wp-custom-wrapper #movie-search:focus { border-color: #ff0000; }
 
-/* --- RESPONSIVE GRID LOGIC --- */
 #wp-custom-wrapper #movie-library-grid { 
     display: grid; 
     gap: 25px; 
@@ -124,35 +120,27 @@
     width: 100%;
 }
 
-/* --- BASE CARD --- */
 #wp-custom-wrapper .movie-card {
-    background: rgba(10, 10, 10, 0.98); 
-    border-radius: 15px; 
-    border: 1px solid #222; 
-    display: flex; 
-    flex-direction: column; 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden;
+    background: rgba(10, 10, 10, 0.98); border-radius: 15px; border: 1px solid #222; 
+    display: flex; flex-direction: column; transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    overflow: hidden; text-align: center;
 }
 #wp-custom-wrapper .movie-card:hover { transform: translateY(-5px); }
 
-/* --- DYNAMIC EDITION GLOWS --- */
 #wp-custom-wrapper .movie-card.glow-unrated { border-color: #ff0000; box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); }
 #wp-custom-wrapper .movie-card.glow-extended { border-color: #00ff00; box-shadow: 0 0 15px rgba(0, 255, 0, 0.6); }
 #wp-custom-wrapper .movie-card.glow-tvshow { border-color: #ffff00; box-shadow: 0 0 15px rgba(255, 255, 0, 0.6); }
 #wp-custom-wrapper .movie-card.glow-directors { border-color: #00ccff; box-shadow: 0 0 15px rgba(0, 204, 255, 0.6); }
 #wp-custom-wrapper .movie-card.christmas-card { border-color: #ff0000; box-shadow: 0 0 15px rgba(255, 0, 0, 0.4); }
 
-#wp-custom-wrapper .poster-box { 
-    aspect-ratio: 2/3; 
-    background: #000; 
-    border-radius: 15px 15px 0 0; 
-    overflow: hidden; 
-}
+#wp-custom-wrapper .poster-box { aspect-ratio: 2/3; background: #000; border-radius: 15px 15px 0 0; overflow: hidden; }
 #wp-custom-wrapper .movie-card img { width: 100%; height: 100%; object-fit: contain; }
 
-#wp-custom-wrapper .movie-info { padding: 20px 10px; text-align: center; flex-grow: 1; }
+#wp-custom-wrapper .movie-info { padding: 20px 10px; flex-grow: 1; }
 #wp-custom-wrapper .movie-title { font-size: 18px; font-weight: 800; color: #fff; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 8px; display: block; }
+
+#wp-custom-wrapper .movie-meta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; font-size: 11px; font-weight: 900; margin-bottom: 10px; }
+#wp-custom-wrapper .meta-item { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: #aaa; border: 1px solid rgba(255,255,255,0.05); }
 
 #wp-custom-wrapper .edition-badge {
     display: inline-block; background: rgba(139, 0, 0, 0.8); color: #fff; font-size: 10px; font-weight: 900; 
@@ -160,9 +148,9 @@
 }
 
 #wp-custom-wrapper .imdb-link-tag { display: inline-block; color: #f5c518; text-decoration: none; font-size: 11px; font-weight: 900; margin-bottom: 12px; border: 1px solid #f5c518; padding: 2px 6px; border-radius: 4px; }
+
 #wp-custom-wrapper .stream-label { font-size: 10px; font-weight: 900; text-transform: uppercase; margin: 15px 0 8px; display: block; color: #aaa; border-bottom: 1px solid #222; padding-bottom: 3px; }
 
-/* SMART GRID BUTTONS */
 #wp-custom-wrapper .button-container { display: grid; gap: 6px; width: 100%; }
 #wp-custom-wrapper .button-container.count-1 { grid-template-columns: 1fr; }
 #wp-custom-wrapper .button-container.count-2, #wp-custom-wrapper .button-container.count-4 { grid-template-columns: 1fr 1fr; }
@@ -173,13 +161,9 @@
     text-transform: uppercase; text-align: center; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 38px; 
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+#wp-custom-wrapper .m-link:hover, #wp-custom-wrapper .m-link:active { filter: brightness(1.1); transform: scale(1.02); }
 
-/* --- REVERSE HOVER EFFECTS --- */
-#wp-custom-wrapper .m-link:hover, #wp-custom-wrapper .m-link:active {
-    filter: brightness(1.1);
-    transform: scale(1.02);
-}
-
+/* RESTORED COLOR PALETTE */
 #wp-custom-wrapper .btn-amazon { background: #FF9900 !important; color: #000 !important; box-shadow: 0 0 10px #FF9900; }
 #wp-custom-wrapper .btn-amazon:hover { background: #000 !important; color: #FF9900 !important; border: 1px solid #FF9900; }
 
@@ -217,44 +201,22 @@
 #wp-custom-wrapper .btn-roku { background: #662d91 !important; color: #fff !important; }
 #wp-custom-wrapper .btn-roku:hover { background: #fff !important; color: #662d91 !important; border: 1px solid #662d91; }
 
-#wp-custom-wrapper .btn-apple { 
-    background: #ffffff !important; 
-    color: #007aff !important; 
-    border: 1px solid #007aff;
-}
-#wp-custom-wrapper .btn-apple:hover { 
-    background: #007aff !important; 
-    color: #fff !important; 
-}
+#wp-custom-wrapper .btn-apple { background: #ffffff !important; color: #007aff !important; border: 1px solid #007aff; }
+#wp-custom-wrapper .btn-apple:hover { background: #007aff !important; color: #fff !important; }
 
-#wp-custom-wrapper .btn-fandango { 
-    background: linear-gradient(180deg, #007ec3 0%, #004a80 100%) !important; 
-    color: #ff7300 !important; 
-    box-shadow: 0 0 12px rgba(0, 126, 195, 0.5);
-}
-#wp-custom-wrapper .btn-fandango:hover { 
-    background: #ff7300 !important; 
-    color: #004a80 !important; 
-}
+#wp-custom-wrapper .btn-fandango { background: linear-gradient(180deg, #007ec3 0%, #004a80 100%) !important; color: #ff7300 !important; box-shadow: 0 0 12px rgba(0, 126, 195, 0.5); }
+#wp-custom-wrapper .btn-fandango:hover { background: #ff7300 !important; color: #004a80 !important; }
 
-#wp-custom-wrapper .btn-plex { 
-    background: #000 !important; 
-    color: #EBAF00 !important; 
-    border: 2px solid #EBAF00 !important;
-}
-#wp-custom-wrapper .btn-plex:hover { 
-    background: #EBAF00 !important; 
-    color: #000 !important; 
-}
+#wp-custom-wrapper .btn-plex { background: #000 !important; color: #EBAF00 !important; border: 2px solid #EBAF00 !important; }
+#wp-custom-wrapper .btn-plex:hover { background: #EBAF00 !important; color: #000 !important; }
 
-/* --- MOBILE OPTIMIZATION --- */
 @media (max-width: 768px) {
     #wp-custom-wrapper #movie-library-grid { grid-template-columns: 1fr !important; padding: 0 10px; }
     #wp-custom-wrapper .poster-box { aspect-ratio: 1/1; }
     #wp-custom-wrapper .button-container { grid-template-columns: 1fr !important; }
 }
 
-#wp-custom-wrapper .tip-link { display: block; padding: 12px; background: linear-gradient(135deg, #8b0000, #ff0000); color: #fff !important; font-weight: 900; border-radius: 50px; text-align: center; border: 2px solid #fff; box-shadow: 0 5px 15px rgba(255,0,0,0.5); }
+#wp-custom-wrapper .tip-link { display: block; padding: 12px; background: linear-gradient(135deg, #8b0000, #ff0000); color: #fff !important; font-weight: 900; border-radius: 50px; text-align: center; border: 2px solid #fff; box-shadow: 0 5px 15px rgba(255,0,0,0.5); text-decoration: none; }
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -262,84 +224,124 @@
 
 <script>
 (function() {
+    /**
+     * WEREWOLF CINEMA LIBRARY - V21.0 Revised (Full Restoration)
+     * Optimized for ASUS ROG Strix & UltraWide Displays
+     * Logic: tag=moviesanywhere02-20 only for MA films.
+     */
     let movies = [];
-    const myTag = "psngaming-20"; 
     const config = { databaseURL: "https://werewolf-movie-library-default-rtdb.firebaseio.com" };
+    
     if (!firebase.apps.length) firebase.initializeApp(config, 'werewolfLibrary');
     const db = firebase.app('werewolfLibrary').database();
 
     function startClock() {
         const update = () => {
             const now = new Date();
-            const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-            const clockEl = document.getElementById('header-clock');
-            if (clockEl) clockEl.textContent = `${now.toLocaleDateString()} | ${now.toLocaleTimeString()}`;
+            document.getElementById('header-clock').textContent = `${now.toLocaleDateString()} | ${now.toLocaleTimeString()}`;
         };
         update(); setInterval(update, 1000);
     }
     startClock();
 
-    // LIVE LISTENER
     db.ref('movies').on('value', snap => {
         movies = [];
-        snap.forEach(letterGroup => {
-            letterGroup.forEach(movieNode => {
-                const d = movieNode.val();
-                if (d && d.title) movies.push(d);
+        try {
+            snap.forEach(firstLevel => {
+                const nodeData = firstLevel.val();
+                if (nodeData.imdbId) {
+                    movies.push(nodeData); 
+                } else {
+                    firstLevel.forEach(movieEntry => {
+                        const m = movieEntry.val();
+                        if (m && m.imdbId) movies.push(m);
+                    });
+                }
             });
-        });
+        } catch(e) { console.error("Library Sync Failure:", e); }
         updateCollectionDropdown(movies); 
         runFilters(); 
     });
 
     function updateCollectionDropdown(currentList) {
-        let collections = new Set();
-        currentList.forEach(m => { if (m.collection && m.collection !== "None" && m.collection !== "") collections.add(m.collection.trim()); });
+        let colCounts = {};
+        currentList.forEach(m => {
+            if (m.collection && m.collection !== "None" && m.collection !== "") {
+                const name = m.collection.trim();
+                colCounts[name] = (colCounts[name] || 0) + 1;
+            }
+        });
+        const validCols = Object.keys(colCounts).filter(name => colCounts[name] >= 2).sort();
         const el = document.getElementById('collection-select'); if (!el) return;
-        const currentVal = el.value; el.innerHTML = `<option value="">All Collections</option>`;
-        Array.from(collections).sort().forEach(i => { const o = document.createElement('option'); o.value = i; o.textContent = i; if (i === currentVal) o.selected = true; el.appendChild(o); });
+        const currentVal = el.value;
+        el.innerHTML = `<option value="">All Collections</option>`;
+        validCols.forEach(name => {
+            const o = document.createElement('option'); o.value = name; o.textContent = name;
+            if (name === currentVal) o.selected = true; el.appendChild(o);
+        });
     }
 
     window.renderMovies = list => {
         const cnt = document.getElementById('movie-library-grid'); if (!cnt) return;
         document.getElementById('movie-counter').innerHTML = `Found: <span>${list.length}</span> Titles`;
         cnt.innerHTML = '';
+        
         list.forEach(m => {
             const card = document.createElement('div');
-            const isXmas = m.isChristmas === true;
-            
             const ed = (m.edition || "").toLowerCase();
             const ty = (m.type || m.AC || "").toLowerCase();
             let glowClass = "";
-            
             if (ed.includes("unrated")) glowClass = "glow-unrated";
             else if (ed.includes("extended")) glowClass = "glow-extended";
             else if (ed.includes("director")) glowClass = "glow-directors";
             else if (ty.includes("tv show") || ty.includes("tv")) glowClass = "glow-tvshow";
-
-            card.className = `movie-card ${isXmas ? 'christmas-card' : ''} ${glowClass}`;
+            card.className = `movie-card ${glowClass} ${m.isChristmas ? 'christmas-card' : ''}`;
             
             const platforms = m.platforms || {};
+            const isMA = !!platforms.moviesanywhere;
+            const amazonTag = isMA ? "moviesanywhere02-20" : ""; 
+            
+            // --- 🛠️ SYNC LABEL LOGIC ---
+            const buyLabel = isMA ? "Buy / Sync / Rent" : "Buy / Rent";
+            
             const subKeys = ['netflix','disney','hulu','max','paramount','peacock'];
             const freeKeys = ['freevee','tubi','pluto','roku','plex','xumo'];
             const buyKeys = ['amazon','google','youtube','apple','moviesanywhere','fandango'];
-            const buyLabel = !!platforms.moviesanywhere ? "Buy / Rent / Sync" : "Buy / Rent";
             
             let sB = [], fB = [], bB = [];
+
+            // --- 🛠️ DYNAMIC AMAZON LOGIC ---
+            if (!platforms.amazon) {
+                const query = encodeURIComponent(m.title + ' ' + (m.year || ''));
+                const searchUrl = `https://www.amazon.com/s?k=${query}${amazonTag ? '&tag='+amazonTag : ''}`;
+                bB.push(`<a href="${searchUrl}" target="_blank" class="m-link btn-amazon">Amazon Search</a>`);
+            }
+
             Object.keys(platforms).forEach(k => {
-                const url = platforms[k]; const fUrl = k === 'amazon' ? url+'&tag='+myTag : url;
-                const label = k === 'moviesanywhere' ? 'MA' : k.replace(/_/g, ' ');
-                const btn = `<a href="${fUrl}" target="_blank" class="m-link btn-${k.toLowerCase()}">${label}</a>`;
-                if (subKeys.includes(k)) sB.push(btn); else if (freeKeys.includes(k)) fB.push(btn); else if (buyKeys.includes(k)) bB.push(btn);
+                const url = platforms[k]; 
+                let fUrl = url;
+                if (k === 'amazon') {
+                    fUrl = url + (amazonTag ? (url.includes('?') ? '&' : '?') + 'tag=' + amazonTag : '');
+                    bB.push(`<a href="${fUrl}" target="_blank" class="m-link btn-amazon">Amazon</a>`);
+                } else {
+                    const label = k === 'moviesanywhere' ? 'MA' : k.replace(/_/g, ' ');
+                    const btn = `<a href="${fUrl}" target="_blank" class="m-link btn-${k.toLowerCase()}">${label}</a>`;
+                    if (subKeys.includes(k)) sB.push(btn); 
+                    else if (freeKeys.includes(k)) fB.push(btn); 
+                    else if (buyKeys.includes(k)) bB.push(btn);
+                }
             });
 
-            const posterSrc = m.image || 'https://raw.githubusercontent.com/KFruti88/Movies-Anywhere/main/images/default.jpg';
             card.innerHTML = `
-                <div class="poster-box"><img src="${posterSrc}" loading="lazy" onerror="this.src='https://raw.githubusercontent.com/KFruti88/Movies-Anywhere/main/images/default.jpg'"></div>
+                <div class="poster-box"><img src="${m.image || ''}" loading="lazy" onerror="this.src='https://raw.githubusercontent.com/KFruti88/Movies-Anywhere/main/images/default.jpg'"></div>
                 <div class="movie-info">
-                    <div class="movie-title">${m.title} (${m.year}) ${isXmas ? '🎄' : ''}</div>
+                    <div class="movie-title">${m.title || 'Unknown'} (${m.year || ''}) ${m.isChristmas ? '🎄' : ''}</div>
+                    <div class="movie-meta-row">
+                        ${m.length ? `<span class="meta-item">${m.length}</span>` : ''}
+                        ${m.studio ? `<span class="meta-item">${m.studio}</span>` : ''}
+                    </div>
                     ${m.edition && m.edition.toLowerCase() !== 'standard' ? `<div class="edition-badge">${m.edition}</div>` : ''}
-                    <a href="https://www.imdb.com/title/${m.imdbId}" target="_blank" style="color:#00acee; font-size:11px; font-weight:700; text-decoration:none;">[IMDB: ${m.imdbId.replace('tt','')}]</a>
+                    <a href="https://www.imdb.com/title/${m.imdbId}" target="_blank" class="imdb-link-tag">IMDB: ${m.imdbId}</a>
                     ${sB.length ? `<span class="stream-label">Subscriptions</span><div class="button-container count-${sB.length}">${sB.join('')}</div>` : ''}
                     ${fB.length ? `<span class="stream-label" style="color:#1CE783">Free Stream</span><div class="button-container count-${fB.length}">${fB.join('')}</div>` : ''}
                     ${bB.length ? `<span class="stream-label">${buyLabel}</span><div class="button-container count-${bB.length}">${bB.join('')}</div>` : ''}
@@ -357,23 +359,22 @@
         let filtered = movies.filter(m => {
             let typeMatch = true; 
             const mType = (m.type || m.AC || "").toLowerCase();
-            if (ty === 'TV') typeMatch = m.isTv === true || mType.includes("tv"); 
-            else if (ty === 'Movie') typeMatch = m.isTv !== true || mType.includes("movie"); 
-            else if (ty === 'Christmas') typeMatch = m.isChristmas === true;
-            
-            const cleanTitle = m.title.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const mGenre = (m.genre || "").toLowerCase();
-            const mColl = (m.collection || "").toLowerCase();
-            const mEd = (m.edition || "").toLowerCase();
-            const searchPool = (cleanTitle + (m.year || '') + mColl + mGenre + mEd).toLowerCase();
-            
-            return searchPool.includes(t) && typeMatch && (!gn || mGenre.includes(gn.toLowerCase())) && (!co || (m.collection || '') === co);
+            if (ty === 'TV') typeMatch = mType.includes("tv"); 
+            else if (ty === 'Movie') typeMatch = mType.includes("movie"); 
+            const cleanTitle = (m.title || "").toLowerCase().replace(/[^a-z0-9]/g, '');
+            const mCast = (Array.isArray(m.cast) ? m.cast.join(' ') : "").toLowerCase();
+            const searchPool = (cleanTitle + (m.year || '') + (m.collection || '') + (m.genre || '') + (m.edition || '') + mCast);
+            return searchPool.includes(t) && typeMatch && (!gn || (m.genre || "").toLowerCase().includes(gn.toLowerCase())) && (!co || (m.collection || '') === co);
         });
-        if (so === 'az') filtered.sort((a,b) => a.title.localeCompare(b.title));
+        if (so === 'az') filtered.sort((a,b) => (a.title || "").localeCompare(b.title || ""));
         if (so === 'newest') filtered.sort((a,b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
         renderMovies(filtered);
     };
 
-    window.resetFilters = () => { ['movie-search','type-select','genre-select','collection-select'].forEach(id => document.getElementById(id).value = ''); runFilters(); };
+    window.resetFilters = () => { 
+        ['movie-search','type-select','genre-select','collection-select'].forEach(id => document.getElementById(id).value = ''); 
+        document.getElementById('sort-select').value = 'newest';
+        runFilters(); 
+    };
 })();
 </script>
